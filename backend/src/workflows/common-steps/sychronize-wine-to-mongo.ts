@@ -1,4 +1,4 @@
-import { createStep, StepResponse } from "@medusajs/workflows-sdk";
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
 import connectMongo from "/lib/extdb";
 import Wine, { IWine } from "lib/extdb/models/wine.model";
 import { WineProduct } from "modules/wine-data/types";

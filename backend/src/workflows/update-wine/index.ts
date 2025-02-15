@@ -1,4 +1,4 @@
-import { createWorkflow, when, WorkflowResponse } from "@medusajs/workflows-sdk";
+import { createWorkflow, when, WorkflowResponse } from "@medusajs/framework/workflows-sdk";
 import { ProductDTO } from "@medusajs/framework/types";
 import { upsertMongoDb } from "workflows/common-steps/sychronize-wine-to-mongo";
 import { updateProductMetadataStep } from "../common-steps/update-product-metadata";

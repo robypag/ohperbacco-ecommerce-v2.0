@@ -1,4 +1,4 @@
-import { model } from "@medusajs/utils";
+import { model } from "@medusajs/framework/utils";
 
 export const Wine = model.define("wine", {
     id: model.id({ prefix: "wi" }).primaryKey(),

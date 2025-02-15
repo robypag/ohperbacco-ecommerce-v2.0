@@ -1,8 +1,8 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk";
-import { Container } from "../shared/widget-container";
-import { Header } from "../shared/widget-header";
-import { DetailWidgetProps, AdminProduct } from "@medusajs/types";
-import { sdk } from "../lib/config";
+import { Container } from "../../shared/widget-container";
+import { Header } from "../../shared/widget-header";
+import { DetailWidgetProps, AdminProduct } from "@medusajs/framework/types";
+import { sdk } from "../../lib/config";
 import { useQuery } from "@tanstack/react-query";
 import { EditForm } from "./edit-wine-form";
 import { Spinner } from "@medusajs/icons";

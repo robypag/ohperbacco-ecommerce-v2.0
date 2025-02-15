@@ -9,24 +9,21 @@ type CreateDefaultWineWorkflowInput = {
     product: ProductDTO;
 };
 
-const createDefaultWineWorkflow = createWorkflow("create-default-wine", (input: CreateDefaultWineWorkflowInput) => {
-    const { id, subtitle } = input.product;
-    const defaultWine = createDefaultWineStep({ productId: id, productSubtitle: subtitle });
-    createRemoteLinkStep([
-        {
-            [WINE_MODULE]: {
-                wine_id: defaultWine.id,
+export const createDefaultWineWorkflow = createWorkflow(
+    "create-default-wine",
+    (input: CreateDefaultWineWorkflowInput) => {
+        const { id, subtitle } = input.product;
+        const defaultWine = createDefaultWineStep({ productId: id, productSubtitle: subtitle });
+        createRemoteLinkStep([
+            {
+                [WINE_MODULE]: {
+                    wine_id: defaultWine.id,
+                },
+                [Modules.PRODUCT]: {
+                    product_id: id,
+                },
             },
-            [Modules.PRODUCT]: {
-                product_id: id,
-            },
-        },
-    ]);
-    return new WorkflowResponse({
-        wine: {
-            ...defaultWine,
-        },
-    });
-});
-
-export default createDefaultWineWorkflow;
+        ]);
+        return new WorkflowResponse(defaultWine);
+    },
+);

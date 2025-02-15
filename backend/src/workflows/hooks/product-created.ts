@@ -1,8 +1,7 @@
-import createDefaultWineWorkflow from "workflows/create-default-wine";
+import { createDefaultWineWorkflow } from "workflows/create-default-wine";
 import { createProductsWorkflow } from "@medusajs/core-flows";
-import { IProductModuleService, ProductDTO } from "@medusajs/types";
-import { ModuleRegistrationName } from "@medusajs/utils";
-import { UserDTO } from "@medusajs/framework/types";
+import { IProductModuleService, ProductDTO } from "@medusajs/framework/types";
+import { ModuleRegistrationName } from "@medusajs/framework/utils";
 
 createProductsWorkflow.hooks.productsCreated(async ({ products }, { container }) => {
     const productService: IProductModuleService = container.resolve(ModuleRegistrationName.PRODUCT);

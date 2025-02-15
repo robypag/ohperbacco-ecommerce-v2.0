@@ -3,10 +3,10 @@ import { useForm, FormProvider, Controller } from "react-hook-form";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { sdk } from "../lib/config";
+import { sdk } from "../../lib/config";
 import { AdminProduct, AdminUpdateProduct } from "@medusajs/framework/types";
-import { UpdateAdminProductWithWineData } from "../lib/types";
-import { editWineSchema as schema, fieldList } from "../lib/utils";
+import { UpdateAdminProductWithWineData } from "../../lib/types";
+import { editWineSchema, fieldList } from "../../lib/utils";
 
 export type AdditionalWineData = {
     wine: {
@@ -31,8 +31,8 @@ export type UpdateWineFormProps = {
 };
 
 export const EditForm = ({ product }: UpdateWineFormProps) => {
-    const form = useForm<zod.infer<typeof schema>>({
-        resolver: zodResolver(schema),
+    const form = useForm<zod.infer<typeof editWineSchema>>({
+        resolver: zodResolver(editWineSchema),
         defaultValues: product.wine,
     });
 
@@ -50,7 +50,7 @@ export const EditForm = ({ product }: UpdateWineFormProps) => {
     });
 
     const handleSubmit = form.handleSubmit(
-        async (data: zod.infer<typeof schema>) => {
+        async (data: zod.infer<typeof editWineSchema>) => {
             console.log("Product Data", product);
             const payload: UpdateAdminProductWithWineData = {
                 additional_data: {
@@ -97,7 +97,7 @@ export const EditForm = ({ product }: UpdateWineFormProps) => {
                                     <Controller
                                         key={field.name}
                                         control={form.control}
-                                        name={field.name as keyof zod.infer<typeof schema>}
+                                        name={field.name as keyof zod.infer<typeof editWineSchema>}
                                         render={({ field: fieldProps, fieldState: { error } }) => (
                                             <div className="flex flex-col space-y-2">
                                                 <div className="flex items-center gap-x-1">

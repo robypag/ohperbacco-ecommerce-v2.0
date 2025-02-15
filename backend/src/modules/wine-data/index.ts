@@ -1,5 +1,5 @@
 import Service from "./services/service";
-import { Module } from "@medusajs/utils";
+import { Module } from "@medusajs/framework/utils";
 
 export const WINE_MODULE = "wine";
 

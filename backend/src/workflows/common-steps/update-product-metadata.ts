@@ -1,6 +1,6 @@
-import { createStep, StepResponse } from "@medusajs/workflows-sdk";
-import { Modules } from "@medusajs/utils";
-import { AdminCreateProduct, IProductModuleService } from "@medusajs/types";
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
+import { Modules } from "@medusajs/framework/utils";
+import { AdminCreateProduct, IProductModuleService } from "@medusajs/framework/types";
 import { WineProduct } from "modules/wine-data/types";
 
 export type UpdateProductMetadataStepInput = {

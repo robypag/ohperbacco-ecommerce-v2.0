@@ -1,4 +1,4 @@
-import { StepResponse, createStep } from "@medusajs/workflows-sdk";
+import { StepResponse, createStep } from "@medusajs/framework/workflows-sdk";
 import { WINE_MODULE } from "modules/wine-data";
 import WineModuleService from "modules/wine-data/services/service";
 import { WineProduct } from "modules/wine-data/types";

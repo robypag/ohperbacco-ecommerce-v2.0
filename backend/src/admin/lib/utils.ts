@@ -6,9 +6,7 @@ const createRequiredString = (fieldName: string, minLength = 1) => {
             required_error: `${fieldName} è obbligatorio`,
             invalid_type_error: `${fieldName} deve essere una stringa`,
         })
-        .min(minLength, { message: `${fieldName} deve essere di almeno ${minLength} caratteri` })
-        .nullable()
-        .refine((val) => val !== null, { message: `${fieldName} è obbligatorio` });
+        .min(minLength, { message: `${fieldName} deve essere di almeno ${minLength} caratteri` });
 };
 
 const createRequiredNumber = (fieldName: string, min = 1, max?: number) => {
@@ -18,9 +16,7 @@ const createRequiredNumber = (fieldName: string, min = 1, max?: number) => {
             invalid_type_error: `${fieldName} deve essere un numero`,
         })
         .min(min, { message: `${fieldName} deve essere almeno ${min}` })
-        .max(max ?? 99, { message: `${fieldName} deve essere al massimo ${max}` })
-        .nullable()
-        .refine((val) => val !== null, { message: `${fieldName} è obbligatorio` });
+        .max(max ?? 99, { message: `${fieldName} deve essere al massimo ${max}` });
 };
 
 export const editWineSchema = zod.object({

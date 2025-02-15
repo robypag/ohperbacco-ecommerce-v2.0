@@ -1,4 +1,4 @@
-import { MedusaError, MedusaService } from "@medusajs/utils";
+import { MedusaError, MedusaService } from "@medusajs/framework/utils";
 import { Wine } from "../models/wine";
 import { Logger } from "@medusajs/medusa";
 
