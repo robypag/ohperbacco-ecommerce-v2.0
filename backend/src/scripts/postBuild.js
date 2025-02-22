@@ -21,9 +21,11 @@ if (fs.existsSync(envPath)) {
 }
 
 // Install dependencies
-// Skip installation due to https://github.com/medusajs/medusa/issues/11137
-console.log("Installing dependencies in .medusa/server...");
-execSync("pnpm i --prod --frozen-lockfile", {
-    cwd: MEDUSA_SERVER_PATH,
-    stdio: "inherit",
-});
+
+// ===> Skip installation due to https://github.com/medusajs/medusa/issues/11137
+
+// console.log("Installing dependencies in .medusa/server...");
+//execSync("pnpm i --prod --frozen-lockfile", {
+//    cwd: MEDUSA_SERVER_PATH,
+//    stdio: "inherit",
+//});
