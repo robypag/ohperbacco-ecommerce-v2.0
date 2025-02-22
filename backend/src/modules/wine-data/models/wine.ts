@@ -15,4 +15,6 @@ export const Wine = model.define("wine", {
     vinificazione: model.text().nullable(),
     ecosostenibile: model.boolean().default(false).nullable(),
     denominazione: model.text().nullable(),
+    temperatura_servizio: model.text().nullable(),
+    bicchiere: model.text().nullable(),
 });

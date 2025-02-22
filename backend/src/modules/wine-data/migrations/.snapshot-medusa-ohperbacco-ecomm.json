@@ -134,6 +134,24 @@
           "nullable": true,
           "mappedType": "text"
         },
+        "temperatura_servizio": {
+          "name": "temperatura_servizio",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "bicchiere": {
+          "name": "bicchiere",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",

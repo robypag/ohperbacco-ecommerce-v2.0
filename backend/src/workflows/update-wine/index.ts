@@ -22,7 +22,9 @@ export const updateWineFromProductWorkflow = createWorkflow(
             // * Synchronize the product with the external service:
             upsertMongoDb({ product: input.product, wine: wine });
             // * Update product description by leveraging OpenAI:
-            updateProductDescriptionWithOpenAI({ product: input.product, wine: wine });
+            if (!input.product.description || input.product.description.length === 0) {
+                updateProductDescriptionWithOpenAI({ product: input.product, wine: wine });
+            }
         });
         return new WorkflowResponse(wine);
     },

@@ -20,17 +20,19 @@ const createRequiredNumber = (fieldName: string, min = 1, max?: number) => {
 };
 
 export const editWineSchema = zod.object({
-    vitigni: createRequiredString("Vitigni", 5),
     regione: createRequiredString("Regione", 3),
-    gradazione_alcolica: createRequiredNumber("Gradazione Alcolica", 1, 99),
+    vitigni: createRequiredString("Vitigni", 5),
     colore: createRequiredString("Colore", 5),
     profumo: createRequiredString("Profumo", 5),
     gusto: createRequiredString("Gusto", 5),
+    gradazione_alcolica: createRequiredNumber("Gradazione Alcolica", 1, 99),
     caratteristiche: createRequiredString("Caratteristiche", 50),
     abbinamenti: createRequiredString("Abbinamenti", 20),
     eventi: createRequiredString("Eventi", 20),
     vinificazione: createRequiredString("Vinificazione", 20),
     affinamento: createRequiredString("Affinamento", 20),
+    temperatura_servizio: createRequiredString("Temperatura Servizio", 5),
+    bicchiere: createRequiredString("Bicchiere più adeguato", 5),
     ecosostenibile: zod.boolean().optional(),
 });
 

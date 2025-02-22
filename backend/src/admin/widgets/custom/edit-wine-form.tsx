@@ -23,6 +23,8 @@ export type AdditionalWineData = {
         profumo?: string;
         gusto?: string;
         ecosostenibile?: boolean;
+        temperatura_servizio?: string;
+        bicchiere?: string;
     };
 };
 
@@ -44,14 +46,13 @@ export const EditForm = ({ product }: UpdateWineFormProps) => {
             }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["product", product.id] });
-            toast.success("Wine details successfully updated");
+            toast.success("Le informazioni del vino sono state aggiornate con successo");
         },
-        onError: (error) => toast.error(error.message || "An error occurred"),
+        onError: (error) => toast.error(error.message || "Errore durante l'aggiornamento"),
     });
 
     const handleSubmit = form.handleSubmit(
         async (data: zod.infer<typeof editWineSchema>) => {
-            console.log("Product Data", product);
             const payload: UpdateAdminProductWithWineData = {
                 additional_data: {
                     id: product.wine.id,
@@ -67,8 +68,8 @@ export const EditForm = ({ product }: UpdateWineFormProps) => {
         },
         (errors) => {
             console.log(errors);
-            toast.error("Validation Error", {
-                description: "Please, fix Wine informations or fill in required fields",
+            toast.error("Errore di validazione", {
+                description: "Per favore, correggi le informazioni del vino o riempie i campi obbligatori",
             });
         },
     );
@@ -91,6 +92,12 @@ export const EditForm = ({ product }: UpdateWineFormProps) => {
                         >
                             <Drawer.Header>
                                 <Heading className="capitalize">Aggiorna Vino</Heading>
+                                <Drawer.Description>
+                                    <Heading level="h3">
+                                        Al salvataggio di queste informazioni, la descrizione del prodotto verrà
+                                        generata da ChatGPT
+                                    </Heading>
+                                </Drawer.Description>
                             </Drawer.Header>
                             <Drawer.Body className="flex max-w-full flex-1 flex-col gap-y-8 overflow-y-auto">
                                 {fieldList.map((field) => (
@@ -99,59 +106,61 @@ export const EditForm = ({ product }: UpdateWineFormProps) => {
                                         control={form.control}
                                         name={field.name as keyof zod.infer<typeof editWineSchema>}
                                         render={({ field: fieldProps, fieldState: { error } }) => (
-                                            <div className="flex flex-col space-y-2">
-                                                <div className="flex items-center gap-x-1">
-                                                    <Label size="small" weight="plus">
-                                                        {field.label}
-                                                    </Label>
+                                            <>
+                                                <div className="flex flex-col space-y-2">
+                                                    <div className="flex items-center gap-x-1">
+                                                        <Label size="small" weight="plus">
+                                                            {field.label}
+                                                        </Label>
+                                                    </div>
+                                                    {(() => {
+                                                        switch (field.type) {
+                                                            case "number":
+                                                                return (
+                                                                    <Input
+                                                                        type="number"
+                                                                        value={fieldProps.value as number}
+                                                                        onChange={(e) =>
+                                                                            fieldProps.onChange(Number(e.target.value))
+                                                                        }
+                                                                        step={0.5}
+                                                                    />
+                                                                );
+                                                            case "textarea":
+                                                                return (
+                                                                    <Textarea
+                                                                        value={(fieldProps.value as string) || ""}
+                                                                        onChange={(e) =>
+                                                                            fieldProps.onChange(e.target.value)
+                                                                        }
+                                                                    />
+                                                                );
+                                                            case "switch":
+                                                                return (
+                                                                    <Switch
+                                                                        checked={Boolean(fieldProps.value)}
+                                                                        onCheckedChange={fieldProps.onChange}
+                                                                    />
+                                                                );
+                                                            case "text":
+                                                            default:
+                                                                return (
+                                                                    <Input
+                                                                        value={(fieldProps.value as string) || ""}
+                                                                        onChange={(e) =>
+                                                                            fieldProps.onChange(e.target.value)
+                                                                        }
+                                                                    />
+                                                                );
+                                                        }
+                                                    })()}
+                                                    {error && (
+                                                        <Text size="small" weight="plus" className="text-red-500">
+                                                            {error.message}
+                                                        </Text>
+                                                    )}
                                                 </div>
-                                                {(() => {
-                                                    switch (field.type) {
-                                                        case "number":
-                                                            return (
-                                                                <Input
-                                                                    type="number"
-                                                                    value={fieldProps.value as number}
-                                                                    onChange={(e) =>
-                                                                        fieldProps.onChange(Number(e.target.value))
-                                                                    }
-                                                                    step={0.5}
-                                                                />
-                                                            );
-                                                        case "textarea":
-                                                            return (
-                                                                <Textarea
-                                                                    value={(fieldProps.value as string) || ""}
-                                                                    onChange={(e) =>
-                                                                        fieldProps.onChange(e.target.value)
-                                                                    }
-                                                                />
-                                                            );
-                                                        case "switch":
-                                                            return (
-                                                                <Switch
-                                                                    checked={Boolean(fieldProps.value)}
-                                                                    onCheckedChange={fieldProps.onChange}
-                                                                />
-                                                            );
-                                                        case "text":
-                                                        default:
-                                                            return (
-                                                                <Input
-                                                                    value={(fieldProps.value as string) || ""}
-                                                                    onChange={(e) =>
-                                                                        fieldProps.onChange(e.target.value)
-                                                                    }
-                                                                />
-                                                            );
-                                                    }
-                                                })()}
-                                                {error && (
-                                                    <Text size="small" weight="plus" className="text-red-500">
-                                                        {error.message}
-                                                    </Text>
-                                                )}
-                                            </div>
+                                            </>
                                         )}
                                     />
                                 ))}
