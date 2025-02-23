@@ -12,12 +12,19 @@ export type UpsertMongoDbStepInput = {
 export const updateProductDescriptionWithOpenAI = createStep(
     "update-product-description-with-openai",
     async ({ product, wine }: UpsertMongoDbStepInput, { container }) => {
-        // Generate a description using OpenAI
-        const generatedDescription = await openAiGenerateDescription(wine);
-        // Update the product description
-        const productService: IProductModuleService = container.resolve(Modules.PRODUCT);
-        const updatedProduct = await productService.updateProducts(product.id, { description: generatedDescription });
-        return new StepResponse({ product: updatedProduct }, product);
+        if (!product.description || product.description.trim() === "") {
+            const productService: IProductModuleService = container.resolve(Modules.PRODUCT);
+            const productData = await productService.retrieveProduct(product.id, { relations: ["categories"] });
+            // Generate a description using OpenAI
+            const generatedDescription = await openAiGenerateDescription(wine, productData);
+            // Update the product description
+            const updatedProduct = await productService.updateProducts(product.id, {
+                description: generatedDescription,
+            });
+            return new StepResponse({ product: updatedProduct }, product);
+        } else {
+            return new StepResponse({ product }, product);
+        }
     },
     async ({ id, description }, { container }) => {
         const productService: IProductModuleService = container.resolve(Modules.PRODUCT);
