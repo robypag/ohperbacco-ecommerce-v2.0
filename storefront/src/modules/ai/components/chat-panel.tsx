@@ -42,9 +42,7 @@ export function ChatPanel({
   const { width: windowWidth = 1920, height: windowHeight = 1090 } =
     useWindowSize()
 
-  // const { data: votes } = useSWR(`/api/vote?chatId=${id}`, fetcher)
-  const votes: Array<IVote> = []
-
+  const { data: votes } = useSWR(`/api/vote?chatId=${id}`, fetcher)
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>()
 

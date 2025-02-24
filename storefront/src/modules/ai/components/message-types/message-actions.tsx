@@ -1,7 +1,7 @@
 "use client"
 
 import type { Message } from "ai"
-import { toast } from "@medusajs/ui"
+import { toast } from "sonner"
 import { useSWRConfig } from "swr"
 import { useCopyToClipboard } from "usehooks-ts"
 import { IVote } from "@lib/ai/database/models/vote.model"
@@ -51,7 +51,7 @@ export function MessageActions({
         onClick={async () => {
           const messageId = getMessageIdFromAnnotations(message)
           try {
-            await fetch("/api/vote", {
+            const upvote = fetch("/api/vote", {
               method: "PATCH",
               body: JSON.stringify({
                 chatId,
@@ -59,9 +59,31 @@ export function MessageActions({
                 type: "up",
               }),
             })
-            toast.success("Upvoted!", {
-              description: "Your vote has been recorded.",
-              duration: 3000,
+
+            toast.promise(upvote, {
+              loading: "Upvoting Response...",
+              success: () => {
+                mutate<Array<IVote>>(
+                  `/api/vote?chatId=${chatId}`,
+                  (currentVotes) => {
+                    if (!currentVotes) return []
+                    const votesWithoutCurrent = currentVotes.filter(
+                      (vote) => vote.messageId !== message.id
+                    )
+                    return [
+                      ...votesWithoutCurrent,
+                      {
+                        chatId,
+                        messageId: message.id,
+                        isUpvoted: true,
+                      },
+                    ]
+                  },
+                  { revalidate: false }
+                )
+                return "Upvoted Response!"
+              },
+              error: "Failed to upvote response.",
             })
           } catch (error: any) {
             toast.error("Error!", {
@@ -81,7 +103,7 @@ export function MessageActions({
         onClick={async () => {
           const messageId = getMessageIdFromAnnotations(message)
           try {
-            await fetch("/api/vote", {
+            const downvote = fetch("/api/vote", {
               method: "PATCH",
               body: JSON.stringify({
                 chatId,
@@ -89,9 +111,32 @@ export function MessageActions({
                 type: "down",
               }),
             })
-            toast.success("Downvoted!", {
-              description: "Your vote has been recorded.",
-              duration: 3000,
+            toast.promise(downvote, {
+              loading: "Downvoting Response...",
+              success: () => {
+                mutate<Array<IVote>>(
+                  `/api/vote?chatId=${chatId}`,
+                  (currentVotes) => {
+                    if (!currentVotes) return []
+
+                    const votesWithoutCurrent = currentVotes.filter(
+                      (vote) => vote.messageId !== message.id
+                    )
+                    return [
+                      ...votesWithoutCurrent,
+                      {
+                        chatId,
+                        messageId: message.id,
+                        isUpvoted: false,
+                      },
+                    ]
+                  },
+                  { revalidate: false }
+                )
+
+                return "Downvoted Response!"
+              },
+              error: "Failed to downvote response.",
             })
           } catch (error: any) {
             toast.error("Error!", {

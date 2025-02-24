@@ -17,7 +17,6 @@ const VoteSchema = new Schema<IVote>(
       versionKey: false,
       virtuals: false,
     },
-    _id: false,
   }
 )
 
