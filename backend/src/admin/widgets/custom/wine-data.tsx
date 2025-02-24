@@ -17,7 +17,7 @@ const CustomDetailWidget = ({ data: productData }: DetailWidgetProps<AdminProduc
             sdk.admin.product.retrieve(productData.id, {
                 fields: "id, description, *wine",
             }),
-        queryKey: ["products", productData.id],
+        queryKey: ["product", productData.id],
     });
 
     // * Return Container
