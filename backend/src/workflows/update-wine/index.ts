@@ -15,14 +15,20 @@ export const updateWineFromProductWorkflow = createWorkflow(
     "update-wine-from-product",
     (input: UpdateWineFromProductWorkflowInput) => {
         // * Update Wine details:
-        const wine = when(input, (input) => input.additional_data && Object.keys(input.additional_data).length > 0).then(() => {
+        const wine = when(
+            input,
+            (input) => input.additional_data && Object.keys(input.additional_data).length > 0,
+        ).then(() => {
             const wine = updateWineStep({ data: input.additional_data });
             // * Update product metadata using Wine informations to enable simplified search from Storefront:
             updateProductMetadataStep({ product_id: input.product.id, wine_data: wine });
-            // * Synchronize the product with the external service:
-            upsertMongoDb({ product: input.product, wine: wine });
             // * Update product description by leveraging OpenAI:
-            updateProductDescriptionWithOpenAI({ product: input.product, wine: wine });
+            const { product: updatedProduct } = updateProductDescriptionWithOpenAI({
+                product: input.product,
+                wine: wine,
+            });
+            // * Synchronize the product with the external service:
+            upsertMongoDb({ product: updatedProduct, wine: wine });
         });
         return new WorkflowResponse(wine);
     },

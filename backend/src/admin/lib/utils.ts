@@ -20,6 +20,7 @@ const createRequiredNumber = (fieldName: string, min = 1, max?: number) => {
 };
 
 export const editWineSchema = zod.object({
+    produttore: createRequiredString("Produttore", 5),
     regione: createRequiredString("Regione", 3),
     vitigni: createRequiredString("Vitigni", 5),
     colore: createRequiredString("Colore", 5),

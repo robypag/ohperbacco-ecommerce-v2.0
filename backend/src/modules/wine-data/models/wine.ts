@@ -17,4 +17,5 @@ export const Wine = model.define("wine", {
     denominazione: model.text().nullable(),
     temperatura_servizio: model.text().nullable(),
     bicchiere: model.text().nullable(),
+    produttore: model.text().nullable(),
 });

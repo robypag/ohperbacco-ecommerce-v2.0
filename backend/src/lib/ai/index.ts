@@ -7,13 +7,14 @@ export const openAiGenerateDescription = async (wine_data: WineProduct, productD
     // Add Product Category and type to the payload:
     const composedProduct = {
         ...wine_data,
-        categories: productData.categories.map((c) => ({ name: c.name, description: c.description}))
-    }
+        categories: productData.categories.map((c) => ({ name: c.name, description: c.description })),
+    };
     const { text } = await generateText({
         model: openai(process.env.OPENAI_API_MODEL || "gpt-4o-mini"),
         maxTokens: 1500,
         system: `Sei un sommelier professionista e la tua principale caratteristica è quella di generare delle perfette descrizioni per i vini, partendo da dati strutturati in formato JSON, come ad esempio
         {
+           produttore: "Cantina del Sole",
            nome: "PROVINCIA DI PAVIA IGT – MOSCATO SECCO",
            denominazione: "Provincia di Pavia IGT",
            regione: "Toscana",

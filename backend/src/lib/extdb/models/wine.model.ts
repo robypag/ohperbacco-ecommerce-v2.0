@@ -17,6 +17,9 @@ export interface IWine {
     ecosostenibile: boolean;
     relatedProductId: string;
     description: string;
+    tipologia_vino: string;
+    produttore: string;
+    tags: string[];
 }
 
 const WineSchema = new Schema<IWine>(
@@ -36,6 +39,9 @@ const WineSchema = new Schema<IWine>(
         profumo: String,
         relatedProductId: String,
         description: String,
+        tipologia_vino: String,
+        produttore: String,
+        tags: [String],
     },
     {
         toJSON: {
