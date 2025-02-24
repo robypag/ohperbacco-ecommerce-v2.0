@@ -1,4 +1,3 @@
-import { c } from "framer-motion/dist/types.d-6pKw1mTI"
 import connectMongo from "../database"
 import Vote from "../database/models/vote.model"
 
