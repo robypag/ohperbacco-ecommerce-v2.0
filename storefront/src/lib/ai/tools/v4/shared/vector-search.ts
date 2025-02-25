@@ -37,7 +37,7 @@ const regexCondition = (
   let conditionObject: Record<string, any> = {}
   const value = regSearch ? exp?.replace(/ /g, "|") : exp
   conditionObject[fieldName] = {
-    $regex: value && value !== "Any" ? value : ".*",
+    $regex: value && value.toLowerCase() !== "any" ? value : ".*",
     $options: "i",
   }
   return conditionObject
@@ -46,7 +46,7 @@ const regexCondition = (
 const inOrEqCondition = (exp: (string | undefined)[], fieldName: string) => {
   let conditionObject: Record<string, any> = {}
   if (exp) {
-    const nonAnyValues = exp.filter((e) => e !== "Any")
+    const nonAnyValues = exp.filter((e) => e?.toLowerCase() !== "any")
     if (nonAnyValues.length > 0) {
       /*
       conditionObject[fieldName] =
@@ -66,14 +66,14 @@ const arrayToOrCondition = (
   regSearch: boolean = false
 ) => {
   if (!values) {
-    return regexCondition("Any", fieldName, regSearch)
+    return regexCondition("any", fieldName, regSearch)
   }
   if (values.length > 1) {
     return {
       $or: values.map((v) => regexCondition(v, fieldName, regSearch)),
     }
   } else {
-    if (values[0] !== "Any") {
+    if (values[0]?.toLowerCase() !== "any") {
       return regexCondition(values[0], fieldName, regSearch)
     }
     return null
