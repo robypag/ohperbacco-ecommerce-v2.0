@@ -17,7 +17,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
       <Nav />
       {props.children}
       <Footer />
-      {customer && <AiChat />}
+      {customer && <AiChat customer={customer} />}
     </>
   )
 }

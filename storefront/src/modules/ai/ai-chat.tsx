@@ -1,11 +1,15 @@
 "use client"
 
 import React, { useState } from "react"
-import { useScrollToBottom } from "@lib/hooks/scroll-to-bottom"
 import { ChatCallout } from "./components/chat-callout"
 import { ChatModal } from "./components/chat-modal"
+import { StoreCustomer } from "@medusajs/types"
 
-const AiChat = () => {
+export type AiChatProps = {
+  customer?: StoreCustomer
+}
+
+const AiChat = ({ customer }: AiChatProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -16,7 +20,11 @@ const AiChat = () => {
         onClick={() => setIsOpen(true)}
       />
 
-      <ChatModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <ChatModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        greeting={customer?.first_name ?? customer?.email}
+      />
     </>
   )
 }

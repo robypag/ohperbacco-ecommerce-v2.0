@@ -1,5 +1,20 @@
 import connectMongo from "../database"
 import Vote from "../database/models/vote.model"
+import Wine from "../database/models/wine.model"
+
+export async function getDistinctVendors(): Promise<string[]> {
+  await connectMongo()
+  try {
+    return await Wine.find().distinct("produttore").exec()
+  } catch (error) {
+    console.error(
+      error instanceof Error
+        ? error.message
+        : "Error reading distinct vendors from MongoDB"
+    )
+    return []
+  }
+}
 
 export async function getVotesByChatId({ id }: { id: string }) {
   await connectMongo()

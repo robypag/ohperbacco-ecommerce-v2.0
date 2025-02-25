@@ -8,9 +8,10 @@ import { useState } from "react"
 type ChatModalProps = {
   isOpen: boolean
   onClose: () => void
+  greeting?: string
 }
 
-export const ChatModal = ({ isOpen, onClose }: ChatModalProps) => {
+export const ChatModal = ({ isOpen, onClose, greeting }: ChatModalProps) => {
   const [chatKey, setChatKey] = useState(generateId())
   const [showResetConfirm, setShowResetConfirm] = useState(false)
 
@@ -48,7 +49,9 @@ export const ChatModal = ({ isOpen, onClose }: ChatModalProps) => {
         <div className="px-4 py-3 border-b border-ui-border-base flex justify-between items-center bg-ui-bg-base">
           <div className="flex items-center gap-2">
             <IconBacco className="w-8 h-8" />
-            <Text className="text-lg font-semibold">Chiedi a Bacco</Text>
+            <Text className="text-lg font-semibold">
+              {greeting ? `👋🏻 ${greeting}!` : "Bentornato!"}
+            </Text>
           </div>
           <div className="flex items-center gap-2">
             <button

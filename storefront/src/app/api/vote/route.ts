@@ -15,7 +15,6 @@ export async function GET(request: Request) {
   }
 
   const votes = await getVotesByChatId({ id: chatId })
-  console.log(`Votes for chatId ${chatId}:`, votes)
   return Response.json(votes, { status: 200 })
 }
 

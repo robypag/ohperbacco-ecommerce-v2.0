@@ -15,8 +15,6 @@ export const searchMedusaByProductIds = async (
     regionId: currentRegion?.id || "reg_01JM58JFXGEZTRRRHZ6RTM1TFZ",
   })
 
-  console.log(JSON.stringify(products))
-
   return products.map((p) => ({
     id: p.id,
     title: p.title,
