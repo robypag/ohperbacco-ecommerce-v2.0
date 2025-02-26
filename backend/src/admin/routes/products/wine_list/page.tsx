@@ -1,5 +1,5 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { Badge, Button, DataTableRowSelectionState, Heading, toast } from "@medusajs/ui";
+import { Badge, Button, DataTableRowSelectionState, Heading, Text, toast } from "@medusajs/ui";
 import { WineProduct, WineSyncStatus, SyncronizedWineList } from "../../../../modules/wine-data/types";
 import {
     createDataTableColumnHelper,
@@ -16,10 +16,10 @@ import { sdk } from "../../../lib/config";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SingleColumnLayout } from "../../../shared/widget-single-column-layout";
 import { Container } from "../../../shared/widget-container";
-import { Link, LinkProps } from "react-router-dom";
-import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrrowRight } from "@medusajs/icons";
+import { ArrrowRight, Moon } from "@medusajs/icons";
+import { Header } from "../../../shared/widget-header";
+import { MongoDBIcon } from "../../../shared/custom-icons";
 
 type WinesResponse = {
     wines: WineProduct[];
@@ -62,7 +62,7 @@ const columns = [
         },
     }),
     columnHelper.accessor("synced", {
-        header: "Sincronizzato",
+        header: "Stato Sincronizzazione",
         cell: ({ getValue }) => {
             const synced = getValue();
             return (
@@ -226,9 +226,25 @@ const NestedProductsPage = () => {
     return (
         <SingleColumnLayout>
             <Container>
+                <Header
+                    title="Stato sincronizzazione con MongoDB"
+                    subtitle="Visualizza lo stato della sincronizzazione con MongoDB e la creazione dei dati vettoriali per l'AI"
+                    actions={[
+                        {
+                            type: "custom",
+                            children: (
+                                <a href="https://mongodb.com" target="_blank">
+                                    <Button size="base" type="button" className="bg-primary text-white">
+                                        <Text className="text-xs text-ui-fg-base">Vai a MongoDB</Text>
+                                    </Button>
+                                </a>
+                            ),
+                        },
+                    ]}
+                />
                 <DataTable instance={table}>
                     <DataTable.Toolbar className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
-                        <Heading>Vini (VectorDB)</Heading>
+                        <Heading>{data?.count || 0} Vini</Heading>
                         <div className="flex gap-2">
                             <DataTable.FilterMenu tooltip="Filter" />
                             <DataTable.SortingMenu tooltip="Sort" />
