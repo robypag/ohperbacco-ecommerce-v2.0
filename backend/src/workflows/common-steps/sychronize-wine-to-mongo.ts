@@ -74,7 +74,7 @@ export const upsertMongoDb = createStep(
                 ecosostenibile: wine.ecosostenibile,
                 relatedProductId: product.id,
                 description: product.description,
-                tipologia_vino: productData.type.value,
+                tipologia_vino: productData.type?.value ?? "",
                 produttore: wine.produttore,
                 tags: generateTags(wine, product),
             };
