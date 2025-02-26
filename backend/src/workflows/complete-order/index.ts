@@ -1,5 +1,6 @@
-import { createWorkflow, transform, when, WorkflowResponse } from "@medusajs/framework/workflows-sdk";
-import { completeOrderWorkflow, useQueryGraphStep } from "@medusajs/core-flows";
+import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk";
+import { completeOrderWorkflow } from "@medusajs/core-flows";
+import { getLinkedOrderStep } from "./steps/get-fulfillment-linked-order";
 
 export type CompleteOrderWorkflowInput = {
     fulfillment_id: string;
@@ -8,19 +9,10 @@ export type CompleteOrderWorkflowInput = {
 export const markOrderAsCompleteWorkflow = createWorkflow(
     "mark-order-as-complete",
     (input: CompleteOrderWorkflowInput) => {
-        const { data: fulfillmentList } = useQueryGraphStep({
-            entity: "fulfillment",
-            fields: ["order.*"],
-            filters: {
-                id: input.fulfillment_id,
-            },
-        });
-        const fulfillment = transform(fulfillmentList, (list) => {
-            return list.find((f) => f.id === input.fulfillment_id);
-        });
+        const { order } = getLinkedOrderStep({ fulfillmentId: input.fulfillment_id });
         const completedOrder = completeOrderWorkflow.runAsStep({
             input: {
-                orderIds: [fulfillment.order.id],
+                orderIds: [(order as any).id],
             },
         });
         return new WorkflowResponse(completedOrder);
