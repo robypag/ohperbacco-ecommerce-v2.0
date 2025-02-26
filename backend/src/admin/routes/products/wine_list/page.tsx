@@ -1,5 +1,5 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { Badge, DataTableRowSelectionState, Heading, toast } from "@medusajs/ui";
+import { Badge, Button, DataTableRowSelectionState, Heading, toast } from "@medusajs/ui";
 import { WineProduct, WineSyncStatus, SyncronizedWineList } from "../../../../modules/wine-data/types";
 import {
     createDataTableColumnHelper,
@@ -16,7 +16,10 @@ import { sdk } from "../../../lib/config";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SingleColumnLayout } from "../../../shared/widget-single-column-layout";
 import { Container } from "../../../shared/widget-container";
-import { Link } from "react-router-dom";
+import { Link, LinkProps } from "react-router-dom";
+import { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrrowRight } from "@medusajs/icons";
 
 type WinesResponse = {
     wines: WineProduct[];
@@ -48,17 +51,15 @@ const columns = [
         sortDescLabel: "Z-A",
     }),
     columnHelper.accessor("product.id", {
-        header: "ID Prodotto Correlato",
-        cell: ({ getValue }) => (
-            <Link
-                to={{
-                    pathname: `/products/${getValue()}`,
-                }}
-                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover transition-fg"
-            >
-                {getValue()}
-            </Link>
-        ),
+        header: "Prodotto",
+        cell: ({ getValue }) => {
+            const productId = getValue();
+            return (
+                <div className="flex pl-2">
+                    <ProductLink productId={productId} />
+                </div>
+            );
+        },
     }),
     columnHelper.accessor("synced", {
         header: "Sincronizzato",
@@ -92,6 +93,16 @@ const filters = [
 ];
 
 const limit = 15;
+
+const ProductLink = ({ productId }: { productId: string }) => {
+    const navigate = useNavigate();
+
+    return (
+        <Button type="button" size="base" onClick={() => navigate(`/products/${productId}`)}>
+            <ArrrowRight className="w-4 h-4" />
+        </Button>
+    );
+};
 
 const NestedProductsPage = () => {
     const [pagination, setPagination] = useState<DataTablePaginationState>({
