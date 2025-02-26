@@ -1,5 +1,5 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { Badge, Button, DataTableRowSelectionState, Heading, Text, toast } from "@medusajs/ui";
+import { Badge, Button, DataTableRowSelectionState, Heading, Text, toast, StatusBadge } from "@medusajs/ui";
 import { WineProduct, WineSyncStatus, SyncronizedWineList } from "../../../../modules/wine-data/types";
 import {
     createDataTableColumnHelper,
@@ -16,7 +16,6 @@ import { sdk } from "../../../lib/config";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SingleColumnLayout } from "../../../shared/widget-single-column-layout";
 import { Container } from "../../../shared/widget-container";
-import { useNavigate } from "react-router-dom";
 import { ArrrowRight } from "@medusajs/icons";
 import { Header } from "../../../shared/widget-header";
 
@@ -29,12 +28,8 @@ type WinesResponse = {
 
 const limit = 15;
 
-const ProductLink = ({ productId, onNavigate }: { productId: string; onNavigate: (id: string) => void }) => {
-    return (
-        <Button type="button" size="base" onClick={() => onNavigate(productId)}>
-            <ArrrowRight className="w-4 h-4" />
-        </Button>
-    );
+const ProductLink = ({ productId }: { productId: string }) => {
+    return <Badge size="xsmall">{productId}</Badge>;
 };
 
 const NestedProductsPage = () => {
@@ -53,7 +48,6 @@ const NestedProductsPage = () => {
     }, [filtering]);
     const [rowSelection, setRowSelection] = useState<DataTableRowSelectionState>({});
     const queryClient = useQueryClient();
-    const navigate = useNavigate();
 
     // Create Columns:
     const columnHelper = createDataTableColumnHelper<SyncronizedWineList>();
@@ -83,7 +77,7 @@ const NestedProductsPage = () => {
                 const productId = getValue();
                 return (
                     <div className="flex pl-2">
-                        <ProductLink productId={productId} onNavigate={(id) => navigate(`/products/${id}`)} />
+                        <ProductLink productId={productId} />
                     </div>
                 );
             },
@@ -93,9 +87,9 @@ const NestedProductsPage = () => {
             cell: ({ getValue }) => {
                 const synced = getValue();
                 return (
-                    <Badge color={synced === "synced" ? "green" : "red"} size="xsmall">
+                    <StatusBadge color={synced === "synced" ? "green" : "red"} className="text-nowrap">
                         {synced === "synced" ? "Sincronizzato" : "Non sincronizzato"}
-                    </Badge>
+                    </StatusBadge>
                 );
             },
         }),
