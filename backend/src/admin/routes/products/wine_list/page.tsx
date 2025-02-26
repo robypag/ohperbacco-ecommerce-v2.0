@@ -17,9 +17,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SingleColumnLayout } from "../../../shared/widget-single-column-layout";
 import { Container } from "../../../shared/widget-container";
 import { useNavigate } from "react-router-dom";
-import { ArrrowRight, Moon } from "@medusajs/icons";
+import { ArrrowRight } from "@medusajs/icons";
 import { Header } from "../../../shared/widget-header";
-import { MongoDBIcon } from "../../../shared/custom-icons";
 
 type WinesResponse = {
     wines: WineProduct[];
@@ -28,77 +27,11 @@ type WinesResponse = {
     offset: number;
 };
 
-const columnHelper = createDataTableColumnHelper<SyncronizedWineList>();
-
-const columns = [
-    columnHelper.select(),
-    columnHelper.accessor("id", {
-        header: "Wine ID",
-    }),
-    columnHelper.accessor("product.title", {
-        header: "Nome Prodotto Correlato",
-    }),
-    columnHelper.accessor("produttore", {
-        header: "Produttore",
-        // Enables sorting for the column.
-        enableSorting: true,
-        // If omitted, the header will be used instead if it's a string,
-        // otherwise the accessor key (id) will be used.
-        sortLabel: "Produttore",
-        // If omitted the default value will be "A-Z"
-        sortAscLabel: "A-Z",
-        // If omitted the default value will be "Z-A"
-        sortDescLabel: "Z-A",
-    }),
-    columnHelper.accessor("product.id", {
-        header: "Prodotto",
-        cell: ({ getValue }) => {
-            const productId = getValue();
-            return (
-                <div className="flex pl-2">
-                    <ProductLink productId={productId} />
-                </div>
-            );
-        },
-    }),
-    columnHelper.accessor("synced", {
-        header: "Stato Sincronizzazione",
-        cell: ({ getValue }) => {
-            const synced = getValue();
-            return (
-                <Badge color={synced === "synced" ? "green" : "red"} size="xsmall">
-                    {synced === "synced" ? "Sincronizzato" : "Non sincronizzato"}
-                </Badge>
-            );
-        },
-    }),
-];
-
-const filterHelper = createDataTableFilterHelper<WineProduct>();
-const filters = [
-    filterHelper.accessor("synced", {
-        type: "select",
-        label: "Stato Sync",
-        options: [
-            {
-                label: "Sincronizzato",
-                value: "synced",
-            },
-            {
-                label: "Non Sincronizzato",
-                value: "not-synced",
-            },
-        ],
-    }),
-];
-
 const limit = 15;
 
-const ProductLink = ({ productId }: { productId: string }) => {
-    const navigate = useNavigate();
-
+const ProductLink = ({ productId, onNavigate }: { productId: string; onNavigate: (id: string) => void }) => {
     return (
-        <Button type="button" size="base" onClick={() => navigate(`/products/${productId}`)}>
+        <Button type="button" size="base" onClick={() => onNavigate(productId)}>
             <ArrrowRight className="w-4 h-4" />
         </Button>
     );
@@ -120,6 +53,72 @@ const NestedProductsPage = () => {
     }, [filtering]);
     const [rowSelection, setRowSelection] = useState<DataTableRowSelectionState>({});
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
+    // Create Columns:
+    const columnHelper = createDataTableColumnHelper<SyncronizedWineList>();
+    const columns = [
+        columnHelper.select(),
+        columnHelper.accessor("id", {
+            header: "Wine ID",
+        }),
+        columnHelper.accessor("product.title", {
+            header: "Nome Prodotto Correlato",
+        }),
+        columnHelper.accessor("produttore", {
+            header: "Produttore",
+            // Enables sorting for the column.
+            enableSorting: true,
+            // If omitted, the header will be used instead if it's a string,
+            // otherwise the accessor key (id) will be used.
+            sortLabel: "Produttore",
+            // If omitted the default value will be "A-Z"
+            sortAscLabel: "A-Z",
+            // If omitted the default value will be "Z-A"
+            sortDescLabel: "Z-A",
+        }),
+        columnHelper.accessor("product.id", {
+            header: "Prodotto",
+            cell: ({ getValue }) => {
+                const productId = getValue();
+                return (
+                    <div className="flex pl-2">
+                        <ProductLink productId={productId} onNavigate={(id) => navigate(`/products/${id}`)} />
+                    </div>
+                );
+            },
+        }),
+        columnHelper.accessor("synced", {
+            header: "Stato Sincronizzazione",
+            cell: ({ getValue }) => {
+                const synced = getValue();
+                return (
+                    <Badge color={synced === "synced" ? "green" : "red"} size="xsmall">
+                        {synced === "synced" ? "Sincronizzato" : "Non sincronizzato"}
+                    </Badge>
+                );
+            },
+        }),
+    ];
+
+    // Create a filter helper
+    const filterHelper = createDataTableFilterHelper<WineProduct>();
+    const filters = [
+        filterHelper.accessor("synced", {
+            type: "select",
+            label: "Stato Sync",
+            options: [
+                {
+                    label: "Sincronizzato",
+                    value: "synced",
+                },
+                {
+                    label: "Non Sincronizzato",
+                    value: "not-synced",
+                },
+            ],
+        }),
+    ];
 
     // Create a mutation hook
     const syncMutation = useMutation({
@@ -151,6 +150,7 @@ const NestedProductsPage = () => {
         },
     });
 
+    // Commands
     const commandHelper = createDataTableCommandHelper();
     const useCommands = () => {
         return [
@@ -192,6 +192,7 @@ const NestedProductsPage = () => {
         queryKey: queryKey,
     });
 
+    // Prepare DataTable
     const table = useDataTable({
         columns,
         data: data?.wines || [],
@@ -244,7 +245,7 @@ const NestedProductsPage = () => {
                 />
                 <DataTable instance={table}>
                     <DataTable.Toolbar className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
-                        <Heading>{data?.count || 0} Vini</Heading>
+                        <Heading>{data?.wines.length || 0} Vini</Heading>
                         <div className="flex gap-2">
                             <DataTable.FilterMenu tooltip="Filter" />
                             <DataTable.SortingMenu tooltip="Sort" />
