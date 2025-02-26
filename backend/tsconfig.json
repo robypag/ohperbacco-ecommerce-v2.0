@@ -20,7 +20,8 @@
         "jsx": "react-jsx",
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
-        "checkJs": false
+        "checkJs": false,
+        "types": ["jest", "node"]
     },
     "ts-node": {
         "swc": true

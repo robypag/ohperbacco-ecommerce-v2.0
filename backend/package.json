@@ -18,7 +18,10 @@
         "ib": "init-backend",
         "start": "init-backend && cd .medusa/server && medusa start --verbose",
         "dev": "medusa develop",
-        "email:dev": "email dev --dir=./src/modules/email-notifications/templates --port=3002"
+        "email:dev": "email dev --dir=./src/modules/email-notifications/templates --port=3002",
+        "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
+        "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
+        "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit"
     },
     "dependencies": {
         "@ai-sdk/openai": "^1.1.14",
@@ -54,7 +57,8 @@
         "zod": "3.22.4"
     },
     "devDependencies": {
-        "@medusajs/test-utils": "latest",
+        "@jest/globals": "^29.7.0",
+        "@medusajs/test-utils": "^2.5.1",
         "@mikro-orm/cli": "6.4.3",
         "@swc/core": "1.5.7",
         "@swc/jest": "^0.2.37",
