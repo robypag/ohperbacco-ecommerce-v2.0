@@ -4,6 +4,7 @@ import { newConversationPrompt } from "@lib/ai/prompts"
 import {
   searchProductsTool,
   searchProductsByVendorTool,
+  searchOrdersTool,
 } from "@lib/ai/tools/v4"
 import { getDistinctVendors } from "@lib/ai/actions"
 
@@ -31,6 +32,7 @@ export async function POST(req: Request) {
     tools: {
       getProducts: searchProductsTool,
       getProductsByVendor: searchProductsByVendorTool,
+      getCustomerOrders: searchOrdersTool,
     },
     onStepFinish({ text, toolCalls, toolResults, finishReason, usage }) {
       console.info("Step Usage:", usage)
