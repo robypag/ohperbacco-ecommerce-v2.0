@@ -18,4 +18,5 @@ export const Wine = model.define("wine", {
     temperatura_servizio: model.text().nullable(),
     bicchiere: model.text().nullable(),
     produttore: model.text().nullable(),
+    synced: model.text().default("not-synced").nullable(),
 });

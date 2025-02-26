@@ -6,7 +6,7 @@ import { IProductModuleService, ProductDTO } from "@medusajs/framework/types";
 import { Modules } from "@medusajs/framework/utils";
 
 export type UpsertMongoDbStepInput = {
-    product: ProductDTO;
+    product_id: string;
     wine: WineProduct;
 };
 
@@ -52,10 +52,14 @@ const generateTags = (wine_data: WineProduct, product: ProductDTO): string[] => 
 
 export const upsertMongoDb = createStep(
     "upsert-mongodb",
-    async ({ product, wine }: UpsertMongoDbStepInput, { context, container }) => {
+    async ({ product_id, wine }: UpsertMongoDbStepInput, { context, container }) => {
         await connectMongo();
+        const logger = container.resolve("logger");
+
+        const activity = logger.info(`Reading linked product data with ID ${product_id}`);
         const productService: IProductModuleService = container.resolve(Modules.PRODUCT);
-        const productData = await productService.retrieveProduct(product.id, { relations: ["type"] });
+        const product = await productService.retrieveProduct(product_id, { relations: ["type"] });
+        logger.info(`Successfully retrieved product data`);
         try {
             const remoteWineData: IWine = {
                 id: wine.id,
@@ -74,21 +78,22 @@ export const upsertMongoDb = createStep(
                 ecosostenibile: wine.ecosostenibile,
                 relatedProductId: product.id,
                 description: product.description,
-                tipologia_vino: productData.type?.value ?? "",
+                tipologia_vino: product.type?.value ?? undefined,
                 produttore: wine.produttore,
                 tags: generateTags(wine, product),
             };
             // @ts-ignore
-            const synchronizedWine = await Wine.findOneAndUpdate({ id: remoteWineData.id }, remoteWineData, {
+            const updatedWine = await Wine.findOneAndUpdate({ id: remoteWineData.id }, remoteWineData, {
                 upsert: true,
                 new: true,
             });
-            return new StepResponse({
-                synchronizedWine,
-            });
+            logger.info(`Wine ID ${wine.id} successfully synchronized`);
+            return new StepResponse({ wine: updatedWine, is_synced: true });
         } catch (error) {
-            console.error(error.message || error);
-            throw error;
+            return new StepResponse({ wine: undefined, is_synced: false });
         }
+    },
+    async ({ wine, is_synced }, { context, container }) => {
+        return new StepResponse({ wine: undefined, is_synced: false });
     },
 );
