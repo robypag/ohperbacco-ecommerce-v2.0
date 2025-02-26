@@ -10,12 +10,11 @@ export default async function completeDeliveredOrders(container: MedusaContainer
         entity: "order",
         fields: ["id", "status", "payment_status", "fulfillment_status"],
         filters: {
-            payment_status: ["captured"],
             fulfillment_status: ["delivered"],
         },
     });
     logger.progress(activityId, `Found ${deliveredOrders.length} orders, running completion workflow`);
-    const orderIds = deliveredOrders.map((o) => o.id);
+    const orderIds = deliveredOrders.filter((o) => o.payment_status === "captured").map((o) => o.id);
     const { result: completedOrders } = await completeOrderWorkflow(container).run({
         input: {
             orderIds: orderIds,
