@@ -29,8 +29,12 @@ export async function POST(req: Request) {
   const result = streamText({
     model: openai(process.env.OPENAI_API_MODEL || "gpt-4o-mini"),
     messages,
-    maxSteps: 5,
-    maxTokens: 1500,
+    maxSteps: process.env.OPENAI_API_MAX_STEPS
+      ? parseInt(process.env.OPENAI_API_MAX_STEPS)
+      : 5,
+    maxTokens: process.env.OPENAI_MAX_TOKENS
+      ? parseInt(process.env.OPENAI_MAX_TOKENS)
+      : 1500,
     async onFinish({ response }) {
       await saveChat({
         chatId: id,
