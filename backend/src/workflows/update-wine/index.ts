@@ -33,7 +33,7 @@ export const updateWineFromProductWorkflow = createWorkflow(
             return upsertMongoDb({ product_id: updatedProduct.id, wine: wine });
         });
         // * Mark the product as synced:
-        when(result, (result) => result.is_synced === true).then(() =>
+        when(result, (result) => result?.is_synced === true).then(() =>
             updateWineStep({ data: result.wine, is_synced: result.is_synced }).config({
                 name: "update-wine-sync-status",
             }),

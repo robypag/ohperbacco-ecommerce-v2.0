@@ -47,6 +47,13 @@ const generateTags = (wine_data: WineProduct, product: ProductDTO): string[] => 
             }
         });
     }
+    if (product.title) {
+        const title = product.title.toLowerCase();
+        tags.add(title);
+        // Split the title and add individual words
+        const titleWords = title.split(/\s+/);
+        titleWords.forEach((word: string) => tags.add(word.toLowerCase()));
+    }
     return Array.from(tags);
 };
 
@@ -55,8 +62,8 @@ export const upsertMongoDb = createStep(
     async ({ product_id, wine }: UpsertMongoDbStepInput, { context, container }) => {
         await connectMongo();
         const logger = container.resolve("logger");
+        logger.info(`Reading linked product data with ID ${product_id}`);
 
-        const activity = logger.info(`Reading linked product data with ID ${product_id}`);
         const productService: IProductModuleService = container.resolve(Modules.PRODUCT);
         const product = await productService.retrieveProduct(product_id, { relations: ["type"] });
         logger.info(`Successfully retrieved product data`);
@@ -80,6 +87,7 @@ export const upsertMongoDb = createStep(
                 description: product.description,
                 tipologia_vino: product.type?.value ?? undefined,
                 produttore: wine.produttore,
+                nome_vino: product.title,
                 tags: generateTags(wine, product),
             };
             // @ts-ignore

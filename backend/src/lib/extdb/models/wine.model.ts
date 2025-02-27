@@ -18,6 +18,7 @@ export interface IWine {
     relatedProductId: string;
     description: string;
     tipologia_vino: string;
+    nome_vino: string;
     produttore: string;
     tags: string[];
 }
@@ -41,6 +42,7 @@ const WineSchema = new Schema<IWine>(
         description: String,
         tipologia_vino: String,
         produttore: String,
+        nome_vino: String,
         tags: [String],
     },
     {
