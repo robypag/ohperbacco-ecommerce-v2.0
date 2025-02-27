@@ -22,6 +22,8 @@ export async function POST(req: Request) {
   const vendorList = await getDistinctVendors()
   const upvotedMessages = await getUpvotedMessages(customerId)
   const wineList = await getAvailableWines()
+  console.info(wineList)
+
   const systemPrompt = newConversationPrompt
     .replace("$storelist", vendorList.join(","))
     .replace("$upvotedMessages", upvotedMessages)
