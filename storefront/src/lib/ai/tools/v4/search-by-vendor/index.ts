@@ -7,7 +7,7 @@ export const searchProductsByVendorTool = createTool({
   description: "Get the list of wines sold by a given vendor name",
   parameters: preselectionSchema,
   execute: async ({ type, produttore }) => {
-    console.log("Hit SearchProductsByVendorTool")
+    console.log(`Executing 'getProductsByVendor' tool`)
     // * Do a simple search:
     const productIds = await searchByVendor({
       produttore: produttore,

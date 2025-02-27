@@ -1,3 +1,4 @@
+import { title } from "process"
 import * as z from "zod"
 
 export default z.object({
@@ -8,6 +9,7 @@ export default z.object({
         "L'ultima risposta - completa - inviata dall'assistente virtuale"
       )
   ),
+  title: z.string().optional().describe("Il nome del vino"),
   type: z
     .array(
       z

@@ -20,6 +20,7 @@ export const searchMedusaByProductIds = async (
     title: p.title,
     handle: p.handle,
     thumbnail: p.thumbnail,
+    description: p.description,
     isFeatured: false,
     // @ts-ignore
     produttore: p.wine?.produttore || "",

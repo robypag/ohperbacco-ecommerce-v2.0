@@ -8,6 +8,7 @@ export const searchProductsTool = createTool({
   parameters: searchProductsSchema,
   execute: async ({
     context,
+    title,
     produttore,
     regione,
     type,
@@ -16,13 +17,22 @@ export const searchProductsTool = createTool({
     tags,
   }) => {
     // * Log
-    console.log("Calling search-product-in-mongo")
+    console.log(`Executing 'getProducts' tool with parameters:`, {
+        title,
+        produttore,
+        regione,
+        type,
+        vitigni,
+        priceTag,
+        tags
+    })
     // * Step 1: Use messages context to generate embeddings to apply a similarity search:
     const conversationEmbeddings = await generateEmbeddings(context)
     // * Step 2: Perform a vector based search on MongoDB:
-    const productIdsFromSimilaritySearch = await vectorSearch({
+    const winesFromSimilaritySearch = await vectorSearch({
       embeddings: conversationEmbeddings,
       max_results: 5,
+      title,
       regioni: regione,
       types: type,
       produttori: produttore,
@@ -31,10 +41,13 @@ export const searchProductsTool = createTool({
       tags: tags,
     })
 
-    if (productIdsFromSimilaritySearch.length === 0) {
+    if (winesFromSimilaritySearch.length === 0) {
       return []
+    } else {
+      const productIdsFromSimilaritySearch = winesFromSimilaritySearch.map(
+        (item: any) => item.relatedProductId
+      )
+      return await searchMedusaByProductIds(productIdsFromSimilaritySearch)
     }
-
-    return await searchMedusaByProductIds(productIdsFromSimilaritySearch)
   },
 })

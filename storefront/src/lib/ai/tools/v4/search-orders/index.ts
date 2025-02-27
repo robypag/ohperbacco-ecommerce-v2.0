@@ -3,12 +3,12 @@ import { tool as createTool } from "ai"
 import { getCustomer } from "@lib/data/customer"
 import { listOrders, listOrdersByIdsAndStatus } from "@lib/data/orders"
 import { OrderStatus } from "@medusajs/types"
-import { Fuel } from "lucide-react"
 
 export const searchOrdersTool = createTool({
   description: "This tool searches orders for the current customer",
   parameters: preselectionSchema,
   execute: async ({ orderIds, status }) => {
+    console.log(`Executing 'searchOrdersTool' tool`)
     const customer = await getCustomer().catch(() => null)
     if (!customer) {
       throw new Error("Customer needs to be logged in")

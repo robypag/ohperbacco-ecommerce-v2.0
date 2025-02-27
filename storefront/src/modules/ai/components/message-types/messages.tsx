@@ -10,6 +10,7 @@ import { MessageActions } from "./message-actions"
 import { IVote } from "@lib/ai/database/models/vote.model"
 import { IconBacco } from "@modules/common/icons/bacco"
 import ProductList from "./product-list"
+import Link from "next/link"
 
 export const PreviewMessage = ({
   chatId,
@@ -47,7 +48,21 @@ export const PreviewMessage = ({
         <div className="flex flex-col gap-2 w-full">
           {message.content && (
             <div className="flex flex-col gap-4 text-sm">
-              <MemoizedReactMarkdown>
+              <MemoizedReactMarkdown
+                components={{
+                  a: ({ node, children, ...props }) => {
+                    console.log("props: ", { props })
+                    return (
+                      <Link
+                        href={props.href as string}
+                        className="text-crimson-60 font-semibold"
+                      >
+                        {children}
+                      </Link>
+                    )
+                  },
+                }}
+              >
                 {message.content as string}
               </MemoizedReactMarkdown>
             </div>
@@ -82,7 +97,7 @@ export const PreviewMessage = ({
                         <div className="flex items-center space-x-2">
                           <Loader2 className="h-4 w-4 animate-spin" />
                           <span className="text-sm text-muted-foreground">
-                            Elaboro la tua richiesta...
+                            Cerco le informazioni rilevanti...
                           </span>
                         </div>
                       )}

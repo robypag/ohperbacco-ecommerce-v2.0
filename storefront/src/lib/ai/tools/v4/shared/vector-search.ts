@@ -112,6 +112,7 @@ const priceTagCondition = (priceTag: string | undefined) => {
 }
 
 const generateVectorFilterQuery = (
+  title: string | undefined,
   produttori: string[],
   regioni: string[],
   types: string[],
@@ -141,9 +142,16 @@ const generateVectorFilterQuery = (
       "produttore"
     ),
     /*
-    priceTagCondition(priceTag),
-    */
+        priceTagCondition(priceTag),
+        */
   ]
+
+  if (title) {
+    andCondition.push({
+      nome_vino: { $eq: title },
+    })
+  }
+
   return { $and: andCondition.filter((e: any) => e !== null) }
 }
 
@@ -175,6 +183,7 @@ export async function basicSearch({
 }): Promise<SimpleSearchResultItem[] | null> {
   await connectMongo()
   const filterObject = generateVectorFilterQuery(
+    undefined,
     [],
     regioni,
     types,
@@ -209,6 +218,7 @@ export async function searchByVendor({
 }): Promise<string[] | null> {
   await connectMongo()
   const filterObject = generateVectorFilterQuery(
+    undefined,
     [produttore],
     [],
     types,
@@ -227,9 +237,46 @@ export async function searchByVendor({
   }
 }
 
+export async function similaritySearch({
+  embeddings,
+}: {
+  embeddings: IterableIterator<number> | undefined
+}) {
+  if (!embeddings) {
+    throw new Error("Cannot apply aggregate on an empty vector")
+  }
+  await connectMongo()
+  const aggregatePipeline = [
+    {
+      $vectorSearch: {
+        queryVector: getArrayFromIterator(embeddings),
+        path: "description_embedding",
+        numCandidates: 60,
+        limit: 5,
+        index: "description_embedding_index",
+      },
+    },
+    {
+      $project: { vector: 0, description_embedding: 0 },
+    },
+    {
+      $addFields: {
+        score: { $meta: "vectorSearchScore" },
+      },
+    },
+    {
+      $match: { score: { $gte: 0.5 } },
+    },
+  ]
+  // * Execute the aggregation pipeline:
+  const items = await Wine.aggregate(aggregatePipeline).exec()
+  return items
+}
+
 export async function vectorSearch({
   embeddings,
   max_results,
+  title,
   regioni,
   types,
   produttori,
@@ -239,19 +286,22 @@ export async function vectorSearch({
 }: {
   embeddings: IterableIterator<number> | undefined
   max_results: number
+  title: string | undefined
   regioni: string[]
   types: string[]
   produttori: string[]
   vitigni: string[]
   priceTag: string | undefined
   tags: string[]
-}): Promise<string[]> {
+}) {
   if (!embeddings) {
     throw new Error("Cannot apply aggregate on an empty vector")
   }
 
   await connectMongo()
+
   const filterObject = generateVectorFilterQuery(
+    title,
     produttori,
     regioni,
     types,
@@ -290,8 +340,7 @@ export async function vectorSearch({
 
   // * Execute the aggregation pipeline:
   const items = await Wine.aggregate(aggregatePipeline).exec()
-  // * Debug:
-  // console.info(`Wine Search Result => ${JSON.stringify(items)}`)
-  // * Return found wine Ids:
-  return items.map((item) => item.relatedProductId)
+  // * Return found wines
+  // return items.map((item) => item.relatedProductId)
+  return items
 }

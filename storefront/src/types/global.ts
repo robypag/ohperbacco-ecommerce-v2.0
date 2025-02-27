@@ -27,6 +27,7 @@ export type ProductPreviewType = {
   created_at?: Date
   isFeatured?: boolean
   produttore?: string
+  description?: string | null
 }
 
 // Chat Data:

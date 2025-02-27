@@ -5,9 +5,9 @@ import {
   searchProductsTool,
   searchProductsByVendorTool,
   searchOrdersTool,
+  getRelevantInformation,
 } from "@lib/ai/tools/v4"
 import {
-  getAvailableWines,
   getDistinctVendors,
   getUpvotedMessages,
   saveChat,
@@ -21,19 +21,16 @@ export async function POST(req: Request) {
 
   const vendorList = await getDistinctVendors()
   const upvotedMessages = await getUpvotedMessages(customerId)
-  const wineList = await getAvailableWines()
-  console.info(wineList)
 
   const systemPrompt = newConversationPrompt
     .replace("$storelist", vendorList.join(","))
     .replace("$upvotedMessages", upvotedMessages)
-    .replace("$wineList", JSON.stringify(wineList))
 
   const result = streamText({
     model: openai(process.env.OPENAI_API_MODEL || "gpt-4o-mini"),
     messages,
     maxSteps: 5,
-    maxTokens: 2000,
+    maxTokens: 1500,
     async onFinish({ response }) {
       await saveChat({
         chatId: id,
@@ -46,6 +43,7 @@ export async function POST(req: Request) {
     },
     system: systemPrompt,
     tools: {
+      getRelevantInfo: getRelevantInformation,
       getProducts: searchProductsTool,
       getProductsByVendor: searchProductsByVendorTool,
       getCustomerOrders: searchOrdersTool,
