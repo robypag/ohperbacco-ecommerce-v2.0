@@ -148,7 +148,7 @@ const generateVectorFilterQuery = (
 
   if (title) {
     andCondition.push({
-      nome_vino: { $eq: title },
+      nome_vino: { $regex: title, $options: "i" },
     })
   }
 
