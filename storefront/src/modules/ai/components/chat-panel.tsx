@@ -11,13 +11,16 @@ import { Overview } from "../components/overview"
 import { PreviewMessage, ThinkingMessage } from "./message-types/messages"
 import { IVote } from "@lib/ai/database/models/vote.model"
 import { MultimodalInput } from "./chat-input"
+import { StoreCustomer } from "@medusajs/types"
 
 export function ChatPanel({
   id,
   initialMessages,
+  customer,
 }: {
   id: string
   initialMessages: Array<Message>
+  customer?: StoreCustomer
 }) {
   const { mutate } = useSWRConfig()
   const modelId = getModel()
@@ -32,7 +35,9 @@ export function ChatPanel({
     stop,
     data: streamingData,
   } = useChat({
-    body: { id, modelId: modelId },
+    id: id,
+    sendExtraMessageFields: true,
+    body: { id, modelId: modelId, customerId: customer?.id },
     initialMessages,
     onFinish: () => {
       mutate("/api/history")

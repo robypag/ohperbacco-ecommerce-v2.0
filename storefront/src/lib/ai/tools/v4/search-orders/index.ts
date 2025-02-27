@@ -3,6 +3,7 @@ import { tool as createTool } from "ai"
 import { getCustomer } from "@lib/data/customer"
 import { listOrders, listOrdersByIdsAndStatus } from "@lib/data/orders"
 import { OrderStatus } from "@medusajs/types"
+import { Fuel } from "lucide-react"
 
 export const searchOrdersTool = createTool({
   description: "This tool searches orders for the current customer",
@@ -18,17 +19,19 @@ export const searchOrdersTool = createTool({
       orderIds && orderIds.length > 0
         ? await listOrdersByIdsAndStatus(orderIds, statuses)
         : await listOrders()
-    console.info(customerOrders)
+
     return customerOrders.map((o) => ({
       id: o.id,
       externalId: o.display_id,
-      status: o.status,
+      status: o.fulfillment_status === "delivered" ? "completed" : "pending",
       orderDate: o.created_at,
       total: o.total,
       orderedItems: o.items?.map((i) => ({
         itemName: i.product_title,
         itemPrice: i.item_total,
       })),
+      fulfillmentStatus: o.fulfillment_status,
+      paymentStatus: o.payment_status,
     }))
   },
 })

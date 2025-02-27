@@ -67,7 +67,7 @@ export const PreviewMessage = ({
                         )}
                       </div>
                     )
-                  } else return null
+                  }
                 } else {
                   return (
                     <div key={toolCallId}>

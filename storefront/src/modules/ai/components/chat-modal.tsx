@@ -4,14 +4,21 @@ import { IconBacco } from "@modules/common/icons/bacco"
 import { ChatPanel } from "./chat-panel"
 import { generateId } from "ai"
 import { useState } from "react"
+import { StoreCustomer } from "@medusajs/types"
 
 type ChatModalProps = {
   isOpen: boolean
   onClose: () => void
   greeting?: string
+  customer?: StoreCustomer
 }
 
-export const ChatModal = ({ isOpen, onClose, greeting }: ChatModalProps) => {
+export const ChatModal = ({
+  isOpen,
+  onClose,
+  greeting,
+  customer,
+}: ChatModalProps) => {
   const [chatKey, setChatKey] = useState(generateId())
   const [showResetConfirm, setShowResetConfirm] = useState(false)
 
@@ -89,7 +96,12 @@ export const ChatModal = ({ isOpen, onClose, greeting }: ChatModalProps) => {
           </div>
         )}
 
-        <ChatPanel key={chatKey} id={chatKey} initialMessages={[]} />
+        <ChatPanel
+          key={chatKey}
+          id={chatKey}
+          initialMessages={[]}
+          customer={customer}
+        />
       </Container>
     </div>
   )
