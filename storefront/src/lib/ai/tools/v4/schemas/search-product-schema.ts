@@ -61,12 +61,14 @@ export default z.object({
     .describe(
       "Il budget dell'utente, economico significa minore o uguale a 15€, abbordabile significa tra 15 e 30, costoso significa oltre i 30 euro"
     ),
-  tags: z.array(
-    z
-      .string()
-      .describe(
-        'Il nome generico del vino, contenente la denominazione e il tipo di uve, ad esempio "Barolo", "Chardonnay", "Gavi", etc... da usare solo se viene chiesta una denominazione specifica'
-      )
-      .default("Any")
-  ),
+  tags: z
+    .array(
+      z
+        .string()
+        .describe(
+          'Il nome generico del vino, contenente la denominazione e il tipo di uve, ad esempio "Barolo", "Chardonnay", "Gavi", etc... da usare solo se viene chiesta una denominazione specifica'
+        )
+        .default("Any")
+    )
+    .optional(),
 })
