@@ -4,7 +4,7 @@ import { generateEmbeddings, similaritySearch } from "../shared/vector-search"
 import { searchMedusaByProductIds } from "../shared/search-medusa"
 
 export const getRelevantInformation = createTool({
-  description: `get information from your knowledge base to answer questions.`,
+  description: `Recupera informazioni utili alla generazione delle risposte. Must be called every time.`,
   parameters: z.object({
     question: z.string().describe("the user question"),
     intent: z

@@ -4,7 +4,7 @@ import { generateEmbeddings, vectorSearch } from "../shared/vector-search"
 import { searchMedusaByProductIds } from "../shared/search-medusa"
 
 export const searchProductsTool = createTool({
-  description: "Searches for wines in the marketplace database",
+  description: "Ricerca dei vini nel database Cantina",
   parameters: searchProductsSchema,
   execute: async ({
     context,

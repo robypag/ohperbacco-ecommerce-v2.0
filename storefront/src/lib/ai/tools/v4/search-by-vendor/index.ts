@@ -4,7 +4,7 @@ import { searchByVendor } from "../shared/vector-search"
 import { searchMedusaByProductIds } from "../shared/search-medusa"
 
 export const searchProductsByVendorTool = createTool({
-  description: "Get the list of wines sold by a given vendor name",
+  description: "Recupera la lista dei vini venuti da un produttore",
   parameters: preselectionSchema,
   execute: async ({ type, produttore }) => {
     console.log(`Executing 'getProductsByVendor' tool`)
