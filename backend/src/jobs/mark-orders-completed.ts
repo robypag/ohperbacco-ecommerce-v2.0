@@ -25,5 +25,5 @@ export default async function markOrdersCompletedJob(container: MedusaContainer)
 
 export const config = {
     name: "daily-order-completion",
-    schedule: "0 22 * * *", // Every day at 10:00 PM
+    schedule: "0 0 * * *", // Every day at midnight
 };
