@@ -9,6 +9,7 @@ import { useWindowSize } from "usehooks-ts"
 import { useScrollToBottom } from "@lib/hooks/scroll-to-bottom"
 import { Overview } from "../components/overview"
 import { PreviewMessage, ThinkingMessage } from "./message-types/messages"
+import { ErrorMessage } from "./message-types/error-message"
 import { IVote } from "@lib/ai/database/models/vote.model"
 import { MultimodalInput } from "./chat-input"
 import { StoreCustomer } from "@medusajs/types"
@@ -24,6 +25,8 @@ export function ChatPanel({
 }) {
   const { mutate } = useSWRConfig()
   const modelId = getModel()
+  const [hasError, setHasError] = useState(false)
+
   const {
     messages,
     setMessages,
@@ -41,6 +44,9 @@ export function ChatPanel({
     initialMessages,
     onFinish: () => {
       mutate("/api/history")
+    },
+    onError: (error) => {
+      setHasError(true)
     },
   })
 
@@ -79,6 +85,8 @@ export function ChatPanel({
             messages[messages.length - 1].role === "user" && (
               <ThinkingMessage />
             )}
+
+          {hasError && <ErrorMessage />}
 
           <div
             ref={messagesEndRef}

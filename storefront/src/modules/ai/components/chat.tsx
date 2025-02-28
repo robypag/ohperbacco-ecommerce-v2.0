@@ -4,7 +4,6 @@ import type { Attachment, Message } from "ai"
 import { useChat } from "@ai-sdk/react"
 import { useState } from "react"
 import useSWR, { useSWRConfig } from "swr"
-import { fetcher } from "@lib/util/ai"
 import { getModel } from "@lib/util/ai"
 import { useWindowSize } from "usehooks-ts"
 import { useScrollToBottom } from "lib/hooks/scroll-to-bottom"
@@ -13,7 +12,8 @@ import { Overview } from "../components/overview"
 import { PreviewMessage, ThinkingMessage } from "./message-types/messages"
 
 import { IVote } from "@lib/ai/database/models/vote.model"
-import { MultimodalInput } from "../components/multimodal-input"
+import { MultimodalInput } from "../components/chat-input"
+import { toast } from "@medusajs/ui"
 
 export function Chat({
   id,

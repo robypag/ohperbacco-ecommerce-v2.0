@@ -8,12 +8,12 @@ export const getRelevantInformation = createTool({
   parameters: z.object({
     question: z.string().describe("the user question"),
     intent: z
-      .enum(["search-products", "order-assistance"])
+      .enum(["product-assistance", "order-assistance"])
       .describe("What the user needs assistance with"),
   }),
   execute: async ({ question, intent }) => {
     console.log(`Executing 'getRelevantInfo' tool with intent ${intent}`)
-    if (intent === "search-products") {
+    if (intent === "product-assistance") {
       // * Step 1: Use messages context to generate embeddings to apply a similarity search:
       const conversationEmbeddings = await generateEmbeddings([question])
       // * Step 2: Perform a vector based search on MongoDB:
@@ -22,9 +22,6 @@ export const getRelevantInformation = createTool({
       })
       const productIdsFromSimilaritySearch = winesFromSimilaritySearch.map(
         (item) => item.relatedProductId
-      )
-      console.log(
-        `Found these IDS: ${productIdsFromSimilaritySearch.join(", ")}`
       )
       // * Step 3: Return products
       const products = await searchMedusaByProductIds(

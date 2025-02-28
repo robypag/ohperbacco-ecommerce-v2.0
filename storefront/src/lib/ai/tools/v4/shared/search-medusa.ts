@@ -22,6 +22,11 @@ export const searchMedusaByProductIds = async (
     thumbnail: p.thumbnail,
     description: p.description,
     isFeatured: false,
+    availability:
+      p.variants?.reduce(
+        (acc, variant) => acc + (variant.inventory_quantity || 0),
+        0
+      ) || 0,
     // @ts-ignore
     produttore: p.wine?.produttore || "",
   }))

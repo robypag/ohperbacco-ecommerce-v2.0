@@ -146,11 +146,13 @@ const generateVectorFilterQuery = (
         */
   ]
 
+  /*
   if (title) {
     andCondition.push({
       nome_vino: { $regex: title, $options: "i" },
     })
   }
+  */
 
   return { $and: andCondition.filter((e: any) => e !== null) }
 }
@@ -292,7 +294,7 @@ export async function vectorSearch({
   produttori: string[]
   vitigni: string[]
   priceTag: string | undefined
-  tags: string[]
+  tags: string[] | undefined
 }) {
   if (!embeddings) {
     throw new Error("Cannot apply aggregate on an empty vector")
@@ -307,7 +309,7 @@ export async function vectorSearch({
     types,
     vitigni,
     priceTag,
-    tags
+    tags ? tags : title ? [title] : []
   )
 
   console.info(`Pre-Filter on VectorDB => ${JSON.stringify(filterObject)}`) // * Debug
@@ -339,8 +341,12 @@ export async function vectorSearch({
   ]
 
   // * Execute the aggregation pipeline:
-  const items = await Wine.aggregate(aggregatePipeline).exec()
+  try {
+    return await Wine.aggregate(aggregatePipeline).exec()
+  } catch (error) {
+    console.error(error)
+    return []
+  }
   // * Return found wines
   // return items.map((item) => item.relatedProductId)
-  return items
 }
